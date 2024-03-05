@@ -1,5 +1,25 @@
 version: '3.8'
 services:
+  db:
+    image: postgres:latest
+    container_name: pg
+    environment:
+      - POSTGRES_DB=chat_app_development
+      - POSTGRES_USER=san
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - '2345:5432'
+
+  redis:
+    image: redis:7.2.2-alpine
+    container_name: redis
+    command: --port 9737
+    ports:
+      - '9737:9737'
+    volumes:
+      - ./docker-data/db/redis:/data
+
   web:
     build: .
     command: ./bin/rails server -b 0.0.0.0 -p 4000
@@ -10,18 +30,3 @@ services:
     depends_on:
       - db
       - redis
-    environment:
-      REDIS_URL: redis://redis:6379/0
-      DATABASE_URL: postgres://postgres:password@db:5432/chat_app_development
-  db:
-    image: postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: password
-  redis:
-    image: "redis:alpine"
-    ports:
-      - "6379:6379"
-volumes:
-  postgres_data:

@@ -22,30 +22,12 @@ ARG YARN_VERSION=1.22.21
 ENV PATH=/usr/local/node/bin:$PATH
 RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
     /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
-    npm install -g yarn@$YARN_VERSION && \
-    rm -rf /tmp/node-build-master
+    npm install -g yarn@$YARN_VERSION
 
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-    bundle exec bootsnap precompile --gemfile
-
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
 
 COPY . .
-
-RUN bundle exec bootsnap precompile app/ lib/
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libvips postgresql-client && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-COPY --from=build /usr/local/bundle /usr/local/bundle
-COPY --from=build /chat_app /chat_app
-
-USER rails:rails
 
 ENTRYPOINT ["/chat_app/bin/docker-entrypoint"]
 
