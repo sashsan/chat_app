@@ -3,22 +3,23 @@ services:
   db:
     image: postgres:latest
     container_name: pg
+    command: -p 2345
     environment:
       - POSTGRES_DB=chat_app_development
       - POSTGRES_USER=alex
-      - POSTGRES_PASSWORD=
+      - POSTGRES_PASSWORD=alex
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
-      - '2345:5432'
+      - "2345:2345"
 
   redis:
     image: redis:7.2.2-alpine
     container_name: redis
     command: --port 9737
-    ports:
-      - '9737:9737'
     volumes:
       - ./docker-data/db/redis:/data
+    ports:
+      - "9737:9737"
 
   web:
     build: .
