@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    command: ./bin/rails server -b 0.0.0.0 -p 4000
+    volumes:
+      - .:/chat_app
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: postgres://postgres:password@db:5432/chat_app_development
+  db:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+volumes:
+  postgres_data:

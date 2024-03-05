@@ -1,0 +1,45 @@
+<div class="container mt-3">
+  <div id="group_id" data-group-id="<%= @group.id %>"></div>
+
+  <h3>Группа - <%= @group.name %></h3>
+
+  <div class="group-info">
+    <% if @group.is_private %>
+      <h4>Здесь находятся - <span class="group-users"><%= @recipient&.user_name %></span> &
+        <span class="current-user"><%= current_user.user_name %></span></h4>
+    <% else %>
+      <h4>Здесь находятся - <span class="group-users"><%= @group.users.map(&:user_name).join(', ') %></span></h4>
+    <% end %>
+    <h4>Я - <span class="current-user"><%= current_user.user_name %></span></h4>
+  </div>
+
+  <div id="messages"
+       style="height: 300px;overflow-y: scroll;border: 1px solid #ccc; padding: 10px;"
+  >
+    <% @messages.each do |message| %>
+      <div>
+        <strong><%= message.user.user_name %>:</strong>
+        <%= message.content %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= form_with(url: group_messages_path(group_id: @group.id),
+                method: :post, id: 'new_message',
+                local: true, data: { turbo: false }) do |form| %>
+    <%= form.label :content, 'Сообщение' %>
+    <%= form.text_field :content,
+                        name: 'message[content]',
+                        id: "message_content",
+                        class: "form-control",
+                        placeholder: "Введите сообщение..."
+    %>
+
+    <%= form.submit "Отправить", class: "btn btn-primary mt-2" %>
+  <% end %>
+
+  <%= link_to 'Выйти', destroy_user_session_path,
+              data: { turbo: false },
+              class: 'btn btn-warning mt-2'
+  %>
+</div>

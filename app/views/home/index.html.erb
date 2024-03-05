@@ -1,0 +1,50 @@
+<div class="container mt-3">
+  <h3>Добро пожаловать в Чат-приложение!</h3>
+
+  <% if user_signed_in? %>
+    <div class="user-info mb-3">
+      <h4><%= current_user.user_name %></h4>
+    </div>
+
+    <div class="users-list mb-3">
+      <h3>Пользователи:</h3>
+      <ul class="list-group">
+        <% @users.each do |user| %>
+          <%= form_with(url: group_path(id: user.id),
+                        method: :get, data: { turbo: false }, class: "form-inline") do |form| %>
+            <li class="list-group-item d-flex align-items-center">
+              Приватный чат с - <%= form.submit user.user_name, data: { turbo: false }, class: "btn btn-link p-0" %>
+
+              <%= form.hidden_field :recipient_id, value: user.id %>
+              <%= form.hidden_field :current_user_id, value: current_user.id %>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+
+    <div class="groups-list mb-3">
+      <h2>Группы:</h2>
+      <ul class="list-group">
+        <% @groups.each do |group| %>
+          <li class="list-group-item">
+            Групповой чат - <%= link_to group.name, group_path(group, group_chat: true), data: { turbo: false } %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+
+    <div class="create-group mb-3">
+      <h2>Создать Группу:</h2>
+      <%= form_with(scope: :group, url: groups_path,
+                    method: :post, local: true, data: { turbo: false }, class: "form-group") do |f| %>
+        <%= f.text_field :name, placeholder: "Название группы", class: "form-control mb-2" %>
+        <%= f.submit "Добавить группу", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+
+    <%= link_to 'Выйти', destroy_user_session_path, data: { turbo: false }, class: 'btn btn-warning' %>
+  <% else %>
+    <%= link_to 'Войти', new_user_session_path, data: { turbo: false }, class: 'btn btn-primary' %>
+  <% end %>
+</div>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ChatApp</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <% flash.each do |key, message| %>
+      <% if key == 'success' %>
+        <div class="alert alert-success" role="alert">
+          <%= message %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <%= yield %>
+    <script>
+        document.querySelectorAll('form').forEach(function (el) {
+            el.dataset.turbo = false
+        })
+    </script>
+  </body>
+</html>
