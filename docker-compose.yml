@@ -2,28 +2,28 @@ version: '3.8'
 services:
   db:
     image: postgres:latest
-    container_name: pg
+    container_name: chat_pg
     command: -p 2345
-    environment:
-      - POSTGRES_DB=chat_app_development
-      - POSTGRES_USER=alex
-      - POSTGRES_PASSWORD=alex
-      - POSTGRES_HOST_AUTH_METHOD=trust
-    ports:
-      - "2345:2345"
+    env_file: .env
+    expose:
+      - '2345'
 
   redis:
     image: redis:7.2.2-alpine
-    container_name: redis
+    container_name: chat_redis
     command: --port 9737
     volumes:
       - ./docker-data/db/redis:/data
-    ports:
-      - "9737:9737"
+    expose:
+      - '9737'
 
   web:
     build: .
+    container_name: chat
     command: ./bin/rails server -b 0.0.0.0 -p 4000
+    env_file: .env
+    environment:
+      RAILS_ENV: development
     volumes:
       - .:/chat_app
     ports:

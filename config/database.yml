@@ -6,6 +6,8 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: db
   port: 2345
+  # host: localhost
+  # port: 5432
 
 development:
   <<: *default
@@ -18,5 +20,5 @@ test:
 production:
   <<: *default
   database: chat_app_production
-  username: chat_app
-  password: <%= ENV["CHAT_APP_DATABASE_PASSWORD"] %>
+  username: alex
+  password: alex

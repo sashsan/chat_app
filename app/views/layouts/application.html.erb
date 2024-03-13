@@ -20,10 +20,5 @@
     <% end %>
 
     <%= yield %>
-    <script>
-        document.querySelectorAll('form').forEach(function (el) {
-            el.dataset.turbo = false
-        })
-    </script>
   </body>
 </html>

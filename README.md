@@ -29,7 +29,8 @@ Setup with docker:
 
 Setup with rails server:
 * > bundle
-* > rails db:create && rails db:migrate && rails db:seed
+* > rails db:create db:migrate db:seed
+* > rails assets:precompile  
 * > rails s -p 4000
 * > http://localhost:4000/
   
