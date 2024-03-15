@@ -8,13 +8,11 @@ class GroupsController < ApplicationController
   end
 
   def show
-    if params[:group_chat]
-      @group = Group.includes(:users).find(params[:id])
-      add_current_user_to_group(@group)
-    else
-      @recipient = User.find_by(id: params[:recipient_id])
-      @group = find_or_create_private_group
-    end
+    group_type = params[:group_chat] ? :public_chat : :private_chat
+    @recipient = User.find_by(id: params[:recipient_id])
+
+    @group = ::Groups::GroupFactory.call(id: params[:id], recipient: @recipient,
+                                         user: current_user, type: group_type)
 
     @messages = @group.messages.includes(:user).order(:created_at)
   end
@@ -34,13 +32,5 @@ class GroupsController < ApplicationController
 
   def group_params
     params.require(:group).permit(:name)
-  end
-
-  def find_or_create_private_group
-    Group.find_or_create_private_group(current_user, @recipient)
-  end
-
-  def add_current_user_to_group(group)
-    Group.add_user_to_public_group(current_user, group)
   end
 end
