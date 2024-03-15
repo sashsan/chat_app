@@ -25,8 +25,7 @@
   </div>
 
   <%= form_with(url: group_messages_path(group_id: @group.id),
-                method: :post, id: 'new_message',
-                local: true, data: { turbo: false }) do |form| %>
+                method: :post, id: 'new_message', local: true) do |form| %>
     <%= form.label :content, 'Сообщение' %>
     <%= form.text_field :content,
                         name: 'message[content]',

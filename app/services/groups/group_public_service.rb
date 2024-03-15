@@ -5,8 +5,12 @@ module Groups::GroupPublicService
 
   included do
     class << self
-      def add_user_to_public_group(current_user, group)
+      def find_public_group_and_add_user(current_user, group_id)
+        group = Group.find_by(id: group_id)
+        raise 'Group is nil' if group.nil?
+
         group.users << current_user unless group.users.include?(current_user)
+        group
       end
     end
   end

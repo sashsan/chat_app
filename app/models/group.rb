@@ -9,5 +9,5 @@ class Group < ApplicationRecord
   has_many :messages, dependent: :destroy
 
   scope :except_private, -> { where(is_private: false) }
-  scope :with_user, ->(user_id) { joins(:memberships).where(memberships: { user_id: user_id}) }
+  scope :with_user, ->(user_id) { joins(:memberships).where(memberships: { user_id: user_id }) }
 end
